@@ -30,10 +30,10 @@ $('skip').onclick=next;$('player').addEventListener('ended',next);
 if('mediaSession' in navigator){navigator.mediaSession.setActionHandler('nexttrack',next)}
 document.addEventListener('click',e=>{const b=e.target.closest('button.pl');if(!b)return;const id=b.dataset.id;
  for(const t of D.towns){const s=t.stories.find(x=>x.id===id);if(s){if(!cur||cur.key!==t.key){cur=t;$('pick').value=t.key}play(s,t);break}}});
-fetch('data.json').then(r=>r.json()).then(d=>{D=d;
+fetch('data.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{D=d;
  $('pick').innerHTML+=[...D.towns].sort((a,b)=>a.name.localeCompare(b.name)).map(t=>`<option value="${t.key}">${esc(t.name)}</option>`).join('');
  $('towns').innerHTML=[...D.towns].sort((a,b)=>a.name.localeCompare(b.name)).map(t=>`<details><summary>${esc(t.name)} (${t.stories.length})</summary><button class="pl sv" data-k="${t.key}">Save this town offline</button><ul>${t.stories.map(s=>`<li>${esc(s.title)} <button class="pl" data-id="${s.id}">Play</button></li>`).join('')}</ul></details>`).join('')});
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update());let rl=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(rl&&!window.__rl){window.__rl=1;location.reload()}rl=true})}
 
 async function saveIds(ids,label){const c=await caches.open('ra-v2');let n=0;$('dlstat').textContent=label+': 0/'+ids.length;
  for(const id of ids){const u='audio/'+id+'.m4a';try{if(!(await c.match(u))){const r=await fetch(u);if(r.ok)await c.put(u,r)}}catch(e){}n++;$('dlstat').textContent=label+': '+n+'/'+ids.length}
