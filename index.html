@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ridealong</title>
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
+<meta name="theme-color" content="#14213d"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ridealong"><link rel="apple-touch-icon" href="icon-180.png">
+</head><body><main>
+<h1>Ridealong</h1><p class="sub">Stories about the towns you drive through.</p>
+<section id="drive"><button id="start">Start drive mode</button><p id="status">Drive mode is off. Tap start, allow location, and keep this app open on screen.</p>
+<label>Or pick a town: <select id="pick"><option value="">Choose a town</option></select></label></section>
+<section id="now" hidden><div id="nowTown"></div><h2 id="nowTitle"></h2><audio id="player" controls playsinline></audio>
+<p><button id="skip">Skip</button></p><p id="nowBlurb"></p><p id="nowCredit" class="small"></p></section>
+<section id="queueSec" hidden><h3>Up next in <span id="qTown"></span></h3><ol id="queue"></ol></section>
+<section><h3>All towns</h3><div id="towns"></div></section>
+<p class="small">Private prototype. Stories are researched from the public record, each lists its sources. Music is public domain or Creative Commons, credited under each story.</p>
+</main><script src="app.js"></script></body></html>
