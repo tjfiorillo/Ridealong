@@ -18,7 +18,7 @@ function setTown(t,auto){if(cur&&cur.key===t.key)return;cur=t;$('pick').value=t.
  if($('player').paused||$('player').ended||!playing){if(queue.length)play(queue[0],t)}}
 function onPos(pos){const {latitude:la,longitude:lo,accuracy:ac}=pos.coords;
  const ds=D.towns.map(t=>[t,km(la,lo,t.lat,t.lon)]).sort((a,b)=>a[1]-b[1]);const [t,d]=ds[0];
- if(d<=Math.max(t.r,ac)){setTown(t,true)}else{$('status').textContent=`Between towns. Nearest: ${t.name}, ${(d/1609).toFixed(1)} miles. (accuracy ${Math.round(ac)} m)`}}
+ ds.slice(0,3).forEach(x=>{if(x[1]<15000&&navigator.onLine&&!x[0]._pf){x[0]._pf=1;saveIds(x[0].stories.map(s=>s.id),x[0].name)}});if(d<=Math.max(t.r,ac)){setTown(t,true)}else{$('status').textContent=`Between towns. Nearest: ${t.name}, ${(d/1609).toFixed(1)} miles. (accuracy ${Math.round(ac)} m)`}}
 async function keepAwake(){try{if('wakeLock' in navigator)wake=await navigator.wakeLock.request('screen')}catch(e){}}
 $('start').onclick=()=>{if(!navigator.geolocation){$('status').textContent='This browser has no location. Pick a town instead.';return}
  $('status').textContent='Asking for location...';keepAwake();$('player').play().catch(()=>{});$('player').pause();
@@ -32,5 +32,11 @@ document.addEventListener('click',e=>{const b=e.target.closest('button.pl');if(!
  for(const t of D.towns){const s=t.stories.find(x=>x.id===id);if(s){if(!cur||cur.key!==t.key){cur=t;$('pick').value=t.key}play(s,t);break}}});
 fetch('data.json').then(r=>r.json()).then(d=>{D=d;
  $('pick').innerHTML+=[...D.towns].sort((a,b)=>a.name.localeCompare(b.name)).map(t=>`<option value="${t.key}">${esc(t.name)}</option>`).join('');
- $('towns').innerHTML=[...D.towns].sort((a,b)=>a.name.localeCompare(b.name)).map(t=>`<details><summary>${esc(t.name)} (${t.stories.length})</summary><ul>${t.stories.map(s=>`<li>${esc(s.title)} <button class="pl" data-id="${s.id}">Play</button></li>`).join('')}</ul></details>`).join('')});
+ $('towns').innerHTML=[...D.towns].sort((a,b)=>a.name.localeCompare(b.name)).map(t=>`<details><summary>${esc(t.name)} (${t.stories.length})</summary><button class="pl sv" data-k="${t.key}">Save this town offline</button><ul>${t.stories.map(s=>`<li>${esc(s.title)} <button class="pl" data-id="${s.id}">Play</button></li>`).join('')}</ul></details>`).join('')});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+
+async function saveIds(ids,label){const c=await caches.open('ra-v2');let n=0;$('dlstat').textContent=label+': 0/'+ids.length;
+ for(const id of ids){const u='audio/'+id+'.m4a';try{if(!(await c.match(u))){const r=await fetch(u);if(r.ok)await c.put(u,r)}}catch(e){}n++;$('dlstat').textContent=label+': '+n+'/'+ids.length}
+ $('dlstat').textContent=label+': saved '+n+' stories';try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}}
+$('dlall').onclick=()=>D&&saveIds(D.towns.flatMap(t=>t.stories.map(s=>s.id)),'All stories');
+document.addEventListener('click',e=>{const b=e.target.closest('button.sv');if(!b||!D)return;const t=town(b.dataset.k);if(t)saveIds(t.stories.map(s=>s.id),t.name)});
