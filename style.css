@@ -6,3 +6,5 @@ select{font-size:18px;padding:10px;width:100%;margin-top:8px;border-radius:10px}
 .small{font-size:13px;color:#c9c2bd}a{color:#fcc85e}details{margin:6px 0}summary{cursor:pointer}
 li{margin:6px 0}.t{font-weight:600}.played{opacity:.55}.pl{font-size:15px;padding:6px 12px;margin-left:8px}
 .src{margin:2px 0 8px}#saveCur{display:block;margin:8px 0;width:100%}
+
+.rd summary{font-size:14px;color:#fcc85e}.rd p{margin:6px 0;font-size:16px;line-height:1.5}#nowBlurb span.on{background:#fca31144;border-radius:4px}#nowBlurb{line-height:1.6}

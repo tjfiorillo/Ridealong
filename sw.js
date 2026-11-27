@@ -1,4 +1,4 @@
-const V='ra-v4',A='ra-audio',SHELL=['./','index.html','app.js','style.css','data.json','manifest.json'];
+const V='ra-v5',A='ra-audio',SHELL=['./','index.html','app.js','style.css','data.json','manifest.json'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V&&k!==A).map(k=>caches.delete(k)))));self.clients.claim()});
 self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(u.origin!==location.origin)return;
